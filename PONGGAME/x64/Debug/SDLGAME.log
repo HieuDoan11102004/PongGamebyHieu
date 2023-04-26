@@ -1,0 +1,27 @@
+﻿  GameEngine.cpp
+D:\SDLGAME\SDLGAME\GameEngine.cpp(58,41): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(76,54): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(77,54): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(179,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(180,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(186,35): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(187,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(192,55): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(195,55): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(198,55): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(201,55): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(232,13): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(233,13): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(244,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(246,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(250,82): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(250,75): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(251,82): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(251,74): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(252,81): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(252,73): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(253,74): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\SDLGAME\SDLGAME\GameEngine.cpp(253,66): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Text.cpp
+  Generating Code...
+  SDLGAME.vcxproj -> D:\SDLGAME\x64\Debug\SDLGAME.exe
