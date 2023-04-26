@@ -10,7 +10,8 @@ Game sử dụng SDL2
 
 ## ĐỒ HỌA
 <img width="591" alt="image" src="https://user-images.githubusercontent.com/124886650/234617719-41facb05-cc39-4f9c-8344-8cf7b9ece232.png">
-![menu](https://user-images.githubusercontent.com/124886650/234618356-016ee1d2-5db1-4b2c-9584-7e15e4e241ff.png)
+<img width="481" alt="image" src="https://user-images.githubusercontent.com/124886650/234618669-caa36b5f-179f-4f4c-bbfd-f8165bf76883.png">
+
 
 
 ## ÂM THANH
