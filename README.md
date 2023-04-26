@@ -10,3 +10,6 @@ Game sử dụng SDL2
 
 ## ĐỒ HỌA
 <img width="591" alt="image" src="https://user-images.githubusercontent.com/124886650/234617719-41facb05-cc39-4f9c-8344-8cf7b9ece232.png">
+
+## ÂM THANH
+ Âm thanh cực kì sống động, hiệu ứng âm thanh nổi bật, lôi cuốn.
