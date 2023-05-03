@@ -5,7 +5,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h> // to render ttf fonts
 #include <SDL_mixer.h>
-#include "Sprite.h"
+#include "Object.h"
 #include "Text.h"
 using namespace std;
 #define WINDOW_WIDTH 800
@@ -33,18 +33,18 @@ private:
 	SDL_Texture* menuTexture;
 	SDL_Texture* pauseTexture;
 	SDL_Texture* gameOverTexture;
-	
 
-	int p1score = 0; // for demo score is hardcoded, this score will be tracked and made in a different function
-	int aiscore = 0; // AI paddle score
+
+	int p1score; // for demo score is hardcoded, this score will be tracked and made in a different function
+	int aiscore; // AI paddle score
 
 	string s1 = to_string(p1score);
 	string s2 = to_string(aiscore);
 
-	Sprite* background; // Sprite Actors
-	Sprite* paddleHuman;
-	Sprite* paddleAI;
-	Sprite* ball;
+	Object* background; // Sprite Actors
+	Object* paddleHuman;
+	Object* paddleAI;
+	Object* ball;
 
 	Text* P1score;
 	Text* AIscore;
@@ -101,10 +101,12 @@ public:
 	bool IsMenuRunning() { return isMenuRunning; }
 	bool IsPause() { return isPause; }
 	bool IsOver() { return isOver; }
-	bool checkOver() {
-		return (aiscore == 5 || p1score == 5);
-	}
 
+	//ADD
+	void resetPoint() {
+		p1score = 0;
+		aiscore = 0;
+	}
 
 	void Music();
 	void Effect();
@@ -112,4 +114,5 @@ public:
 	void setMenu();
 	void pauseGame();
 };
+
 

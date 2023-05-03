@@ -2,7 +2,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-class Sprite
+class Object
 {
 private:
 	SDL_Rect spriteSrcRect; // defines part of spreadsheet we'd like to render
@@ -11,7 +11,7 @@ private:
 
 public:
 	SDL_Rect spriteDestRect; // position we'd like to render the above
-	Sprite(const char* spritePath, SDL_Rect srcRect, SDL_Rect destRect, SDL_Renderer* renderer);
-	~Sprite();
+	Object(const char* spritePath, SDL_Rect srcRect, SDL_Rect destRect, SDL_Renderer* renderer);
+	~Object();
 	void Render(SDL_Renderer* renderer);
 };

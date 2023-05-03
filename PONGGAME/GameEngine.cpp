@@ -37,6 +37,7 @@ bool GameEngine::InitGameEngine() {
 	}
 	font = TTF_OpenFont("Assets/Fonts/LTYPE.TTF", 30); // initial size of 30, LTYPE.TTF file placed in created Assets/Fonts folders
 
+	resetPoint();
 
 	P1score = new Text(s1.c_str(), 190, 30, true, renderer, 1);
 	AIscore = new Text(s2.c_str(), 595, 30, true, renderer, 1);
@@ -101,17 +102,17 @@ void GameEngine::CheckBallPaddleCollision() { // continually check if ball and p
 	}
 }
 
-void GameEngine::BallInPaddleHumanGoalArea() { // Add score for AI if ball collides with paddleHuman's goal area behind paddleHuman
-	if (CheckCollision(ball->spriteDestRect, p1goal)) {
+void GameEngine::BallInPaddleHumanGoalArea() { 
+	if (ball->spriteDestRect.x <= p1goal.x) {
 		AddToAIScore();
-		PlayerServe(); // ball is served to aiPaddle
+		PlayerServe(); 
 	}
 }
 
-void GameEngine::BallInPaddleAIGoalArea() { // Add score for Player if ball collides with paddleAI's goal area behind paddleAI
-	if (CheckCollision(ball->spriteDestRect, aigoal)) {
+void GameEngine::BallInPaddleAIGoalArea() { 
+	if (ball->spriteDestRect.x >= aigoal.x) {
 		AddToPlayerScore();
-		AIServe(); // ball is served to playerPaddle
+		AIServe(); 
 	}
 }
 
@@ -204,18 +205,30 @@ void GameEngine::AI() { // Improve AI Paddle: making it challenging for player t
 
 void GameEngine::AddToPlayerScore() { // Scoring System: Player's Score
 	p1score++;
+	if (p1score > 5) p1score = 5; 
 	s1 = to_string(p1score);
+
+	//delete P1score;
+	//P1score = nullptr;
+
 	P1score = new Text(s1.c_str(), 190, 30, true, renderer, 1);
 }
 
 void GameEngine::AddToAIScore() { // Scoring System: AI's Score
 	aiscore++;
+	if (aiscore > 5) aiscore = 5; 
 	s2 = to_string(aiscore);
+
+	//delete AIscore;
+	//AIscore = nullptr;
+
 	AIscore = new Text(s2.c_str(), 595, 30, true, renderer, 1);
 }
 
 void GameEngine::keepScore() { // Game-End Condition: if AI scores 5 points
 	if (aiscore == 5 || p1score == 5) {
+		isRunning = false;
+		isOver = true;
 		endGame();
 	}
 }
@@ -227,8 +240,8 @@ void GameEngine::endGame() { // Game-End Condition
 	paddleHuman->spriteDestRect.y = WINDOW_HEIGHT / 2 - paddleHuman->spriteDestRect.h / 2 - 10;
 }
 
+
 void GameEngine::InitGameWorld() {
-	//font = TTF_OpenFont("Assets/Fonts/LTYPE.TTF", 30); // initial size of 30, LTYPE.TTF file placed in created Assets/Fonts folders
 	speed_x = -3.5; // speed variables
 	speed_y = -3.5;
 	int destW = 800; // Sprites:
@@ -239,6 +252,7 @@ void GameEngine::InitGameWorld() {
 	int destH3 = 128;
 	int destW4 = 32;
 	int destH4 = 32;
+
 	float destX = WINDOW_WIDTH * 0.5f - destW * 0.5f;
 	float destY = WINDOW_HEIGHT * 0.5f - destH * 0.5f;
 	float destX2 = WINDOW_WIDTH * 0.1f - destW2 * 0.1f - 152.0;
@@ -247,22 +261,15 @@ void GameEngine::InitGameWorld() {
 	float destY3 = WINDOW_HEIGHT * 0.4816f - destH3 * 0.4816f;
 	float destX4 = WINDOW_WIDTH * 0.5030f - destW4 * 0.5030f;
 	float destY4 = WINDOW_HEIGHT * 0.4925f - destH4 * 0.4925f;
+
 	InitializeSpriteBackground("Assets/Sprites/stadium.png", 0, 0, 800, 600, destX, destY, destW, destH);
 	InitializeSpritepaddleHuman("Assets/Sprites/image.png", 0, 0, 256, 256, destX2, destY2, destW2, destH2);
 	InitializeSpritepaddleAI("Assets/Sprites/image.png", 256, 0, 256, 256, destX3, destY3, destW3, destH3);
 	InitializeSpriteBall("Assets/Sprites/ball.png", 0, 0, 640, 640, destX4, destY4, destW4, destH4);
-	divider.x = WINDOW_WIDTH / 2; // Center divider
-	divider.y += 0;
-	divider.w = 1;
-	divider.h = WINDOW_HEIGHT;
-	p1goal.x = 0;
-	p1goal.y += 0;
-	p1goal.w = 1;
-	p1goal.h = WINDOW_HEIGHT;
-	aigoal.x = WINDOW_WIDTH - 1;
-	aigoal.y += 0;
-	aigoal.w = 1;
-	aigoal.h = WINDOW_HEIGHT;
+
+	divider = { WINDOW_WIDTH / 2,0,1,WINDOW_HEIGHT }; // Center divider
+	p1goal = { 0,0,1,WINDOW_HEIGHT }; //goal
+	aigoal = { WINDOW_WIDTH - 1,0,1,WINDOW_HEIGHT }; //goal
 }
 
 void GameEngine::Render() {
@@ -276,16 +283,13 @@ void GameEngine::Render() {
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Visual Improvements: center divider
 	SDL_RenderFillRect(renderer, &divider);
 
-	AIscore->RenderFont(); // render ai's score 
-	P1score->RenderFont(); // render player's score  
-
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // player's goal area
 	SDL_RenderFillRect(renderer, &p1goal);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // ai's goal area
 	SDL_RenderFillRect(renderer, &aigoal);
 
-
-
+	AIscore->RenderFont(); // render ai's score 
+	P1score->RenderFont(); // render player's score 
 
 	SDL_RenderPresent(renderer); // must call this to render all of the above
 }
@@ -293,9 +297,9 @@ void GameEngine::Render() {
 void GameEngine::Input() {
 	while (SDL_PollEvent(&event)) {
 		if (event.type == SDL_MOUSEMOTION) {
-			SDL_GetMouseState(&mouseX, &mouseY); // get and store x, y mouse states
+			SDL_GetMouseState(&mouseX, &mouseY); 
 		}
-		if (event.type == SDL_QUIT) { // if we click "X" button to close the window then SDL_Quit event type is triggered
+		if (event.type == SDL_QUIT) { 
 			isRunning = false;
 		}
 		if (event.type == SDL_KEYDOWN) {
@@ -309,11 +313,6 @@ void GameEngine::Input() {
 			}
 		}
 	}
-	if (aiscore == 5 || p1score == 5)
-	{
-		isRunning = false;
-		isOver = true;
-	}
 }
 
 void GameEngine::Quit() {
@@ -321,85 +320,67 @@ void GameEngine::Quit() {
 	SDL_DestroyRenderer(renderer);
 	TTF_CloseFont(font);
 	Mix_FreeMusic(music);
-	SDL_Quit(); // shutdown SDL, any clearing of properties should be placed here
 	Mix_Quit();
 	TTF_Quit();
+	SDL_Quit(); // shutdown SDL, any clearing of properties should be placed here - ADD
 }
 
 void GameEngine::Update() {
-	PaddleHumanMoveMouse(); // Map paddleHuman's y position to the mouse's Y pos
-	SDL_Delay(1); // Pauses the game loop for 10 ms before continuing on to the next frame 
 	UpdateBallPosition(); // Continually update ball's x and y position by the speed amount
-	ResetBallPositionX(); // If ball goes out on sides, left and right, reset to centre of screen
-	ReverseBallPositionY(); // Reverse the ball's y direction
-	PaddleAIMove(); // Move paddleAI with the ball (in the y-direction)
-	ResetPaddleAIBallNotAIArea(); // Reset paddleAI and stop it when ball is away from right side of divider
-	BallInAIArea(); // If ball is on the right side of the divider, paddleAI moves with improved AI
-	CheckBallPaddleCollision(); // Continually check if ball and player paddle or the ball and AI paddle collide
+	PaddleHumanMoveMouse(); // Map paddleHuman's y position to the mouse's Y pos
+
 	BallInPaddleHumanGoalArea(); // Add score for AI if ball collides with paddleHuman's goal area behind paddleHuman
 	BallInPaddleAIGoalArea(); // Add score for Player if ball collides with paddleAI's goal area behind paddleAI
+	
+	PaddleAIMove(); // Move paddleAI with the ball (in the y-direction)
+	BallInAIArea(); // If ball is on the right side of the divider, paddleAI moves with improved AI
+	
+	CheckBallPaddleCollision(); // Continually check if ball and player paddle or the ball and AI paddle collide
+
+	//BallInPaddleHumanGoalArea(); // Add score for AI if ball collides with paddleHuman's goal area behind paddleHuman
+	//BallInPaddleAIGoalArea(); // Add score for Player if ball collides with paddleAI's goal area behind paddleAI
+
 	keepScore(); // Game end condition
+
+	ResetBallPositionX(); // If ball goes out on sides, left and right, reset to centre of screen
+	ReverseBallPositionY(); // Reverse the ball's y direction
 }
 
 
 void GameEngine::InitializeSpriteBackground(const char* loadPath, int cellX, int cellY, int cellWidth, int cellHeight,
 	int destX, int destY, int destW, int destH) {
 	SDL_Rect src;
-	src.x = cellX;
-	src.y = cellY;
-	src.w = cellWidth;
-	src.h = cellHeight;
+	src = { cellX, cellY, cellWidth, cellHeight };
 	SDL_Rect dest;
-	dest.x = destX;
-	dest.y = destY;
-	dest.w = destW;
-	dest.h = destH;
-	background = new Sprite(loadPath, src, dest, renderer);
+	dest = { destX, destY, destW, destH };
+	background = new Object(loadPath, src, dest, renderer);
 }
 
 void GameEngine::InitializeSpritepaddleHuman(const char* loadPath2, int cellX2, int cellY2, int cellWidth2, int cellHeight2,
 	int destX2, int destY2, int destW2, int destH2) {
 	SDL_Rect src2;
-	src2.x = cellX2;
-	src2.y = cellY2;
-	src2.w = cellWidth2;
-	src2.h = cellHeight2;
+	src2 = { cellX2, cellY2, cellWidth2, cellHeight2 };
 	SDL_Rect dest2;
-	dest2.x = destX2;
-	dest2.y = destY2;
-	dest2.w = destW2;
-	dest2.h = destH2;
-	paddleHuman = new Sprite(loadPath2, src2, dest2, renderer);
+	dest2 = { destX2, destY2, destW2, destH2 };
+	paddleHuman = new Object(loadPath2, src2, dest2, renderer);
 }
 
 void GameEngine::InitializeSpritepaddleAI(const char* loadPath3, int cellX3, int cellY3, int cellWidth3, int cellHeight3,
 	int destX3, int destY3, int destW3, int destH3) {
 	SDL_Rect src3;
-	src3.x = cellX3;
-	src3.y = cellY3;
-	src3.w = cellWidth3;
-	src3.h = cellHeight3;
+	src3 = { cellX3, cellY3, cellWidth3, cellHeight3 };
 	SDL_Rect dest3;
-	dest3.x = destX3;
-	dest3.y = destY3;
-	dest3.w = destW3;
-	dest3.h = destH3;
-	paddleAI = new Sprite(loadPath3, src3, dest3, renderer);
+	dest3 = { destX3, destY3, destW3, destH3 };
+	paddleAI = new Object(loadPath3, src3, dest3, renderer);
 }
 
 void GameEngine::InitializeSpriteBall(const char* loadPath4, int cellX4, int cellY4, int cellWidth4, int cellHeight4,
 	int destX4, int destY4, int destW4, int destH4) {
 	SDL_Rect src4;
-	src4.x = cellX4;
-	src4.y = cellY4;
-	src4.w = cellWidth4;
-	src4.h = cellHeight4;
+	src4 = { cellX4, cellY4, cellWidth4, cellHeight4 };
 	SDL_Rect dest4;
-	dest4.x = destX4;
-	dest4.y = destY4;
-	dest4.w = destW4;
-	dest4.h = destH4;
-	ball = new Sprite(loadPath4, src4, dest4, renderer);
+	dest4 = { destX4, destY4, destW4, destH4 };
+	ball = new Object(loadPath4, src4, dest4, renderer);
 }
 
 void GameEngine::Music()
@@ -415,8 +396,18 @@ void GameEngine::Effect()
 	Mix_PlayChannel(-1, effect, 0);
 }
 
+//ADD 
+bool MouseInRect(SDL_Rect& a) {
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+	if ((x >= a.x and x <= a.x + a.w) and (y >= a.y and y <= a.y + a.h)) return true;
+	return false;
+}
+
 void GameEngine::setMenu()
 {
+	static int a = 1, b = 1; //ADD
+
 	SDL_Surface* menuSurface = IMG_Load("Assets/Sprites/menu.png");
 
 	menuTexture = SDL_CreateTextureFromSurface(renderer, menuSurface);
@@ -430,8 +421,8 @@ void GameEngine::setMenu()
 	const int menuItem = 2;
 	Text* textMenu[menuItem];
 
-	textMenu[0] = new Text("START", 350, 355, true, renderer, 1);
-	textMenu[1] = new Text("EXIT", 350, 400, true, renderer, 1);
+	textMenu[0] = new Text("START", 350, 355, true, renderer, a); //ADD
+	textMenu[1] = new Text("EXIT", 350, 400, true, renderer, b); //ADD
 
 	textMenu[0]->RenderFont();
 	textMenu[1]->RenderFont();
@@ -442,6 +433,7 @@ void GameEngine::setMenu()
 
 	SDL_Color white = { 255, 255, 255, 255 };
 	SDL_Color red = { 255, 0, 0 };
+	SDL_Color tmpColor = { 255, 255, 255, 255 };
 
 	SDL_Surface* surface[2];
 
@@ -452,11 +444,13 @@ void GameEngine::setMenu()
 
 	surface[0] = TTF_RenderText_Blended(font, text[0], white);
 
-	fontRect[0] = {350, 355, surface[0]->w, surface[0]->h};
+	fontRect[0] = { 350, 355, surface[0]->w, surface[0]->h };
 
 	surface[1] = TTF_RenderText_Blended(font, text[1], white);
 
-	fontRect[1] = {350, 400, surface[1]->w, surface[1]->h};
+	fontRect[1] = { 350, 400, surface[1]->w, surface[1]->h };
+
+	SDL_Rect total = { fontRect[0].x, fontRect[0].y, fontRect[0].w, fontRect[0].h * menuItem }; //ADD
 
 	while (SDL_PollEvent(&eventMenu))
 	{
@@ -474,11 +468,14 @@ void GameEngine::setMenu()
 
 			for (int i = 0; i < menuItem; i++)
 			{
-				if (x >= fontRect[i].x and x <= fontRect[i].x + fontRect[i].w and y >= fontRect[i].y and y <= fontRect[i].y + fontRect[i].h)
+				//ADD
+				if (MouseInRect(fontRect[i]))
 				{
-					textMenu[i] = new Text(text[i], fontRect[i].x, fontRect[i].y, true, renderer, 0);
-					textMenu[i]->RenderFont();
-					SDL_RenderPresent(renderer);
+					a = i;
+					b = 1 - i;
+				}
+				if (!MouseInRect(total)) {
+					a = 1; b = 1;
 				}
 			}
 		}
@@ -505,6 +502,8 @@ void GameEngine::setMenu()
 
 void GameEngine::pauseGame()
 {
+	static int a = 1, b = 1;
+
 	SDL_Surface* pauseSurface = IMG_Load("Assets/Sprites/pause.png");
 
 	pauseTexture = SDL_CreateTextureFromSurface(renderer, pauseSurface);
@@ -518,11 +517,12 @@ void GameEngine::pauseGame()
 	const int pauseItem = 2;
 	Text* textPause[pauseItem];
 
-	textPause[0] = new Text("CONTINUE", 350, 355, true, renderer, 1);
-	textPause[1] = new Text("EXIT", 350, 400, true, renderer, 1);
+	textPause[0] = new Text("CONTINUE", 350, 355, true, renderer, a);
+	textPause[1] = new Text("EXIT", 350, 400, true, renderer, b);
 
 	textPause[0]->RenderFont();
 	textPause[1]->RenderFont();
+
 
 	SDL_RenderPresent(renderer);
 
@@ -546,6 +546,8 @@ void GameEngine::pauseGame()
 
 	fontRect[1] = { 350, 400, surface[1]->w, surface[1]->h };
 
+	SDL_Rect total = { fontRect[0].x, fontRect[0].y, fontRect[0].w, fontRect[0].h * pauseItem };
+
 	while (SDL_PollEvent(&eventPause))
 	{
 		if (eventPause.type == SDL_QUIT)
@@ -562,11 +564,15 @@ void GameEngine::pauseGame()
 
 			for (int i = 0; i < pauseItem; i++)
 			{
-				if (x >= fontRect[i].x and x <= fontRect[i].x + fontRect[i].w and y >= fontRect[i].y and y <= fontRect[i].y + fontRect[i].h)
+				if (MouseInRect(fontRect[i]))
 				{
-					textPause[i] = new Text(text[i], fontRect[i].x, fontRect[i].y, true, renderer, 0);
-					textPause[i]->RenderFont();
-					SDL_RenderPresent(renderer);
+					a = i;
+					b = 1 - i;
+				}
+				if (!MouseInRect(total))
+				{
+					a = 1;
+					b = 1;
 				}
 			}
 		}
@@ -593,6 +599,8 @@ void GameEngine::pauseGame()
 
 void GameEngine::setGameOver()
 {
+	static int a = 1, b = 1;
+
 	SDL_Surface* overSurface = IMG_Load("Assets/Sprites/playAgain.png");
 
 	gameOverTexture = SDL_CreateTextureFromSurface(renderer, overSurface);
@@ -606,8 +614,8 @@ void GameEngine::setGameOver()
 	const int overItem = 2;
 	Text* textOver[overItem];
 
-	textOver[0] = new Text("PLAY AGAIN", 320, 300, true, renderer, 1);
-	textOver[1] = new Text("EXIT", 320, 400, true, renderer, 1);
+	textOver[0] = new Text("PLAY AGAIN", 320, 355, true, renderer, a);
+	textOver[1] = new Text("EXIT", 320, 400, true, renderer, b);
 
 	textOver[0]->RenderFont();
 	textOver[1]->RenderFont();
@@ -634,11 +642,13 @@ void GameEngine::setGameOver()
 
 	surface[0] = TTF_RenderText_Blended(font, text[0], white);
 
-	fontRect[0] = { 320, 300, surface[0]->w, surface[0]->h };
+	fontRect[0] = { 320, 355, surface[0]->w, surface[0]->h };
 
 	surface[1] = TTF_RenderText_Blended(font, text[1], white);
 
 	fontRect[1] = { 320, 400, surface[1]->w, surface[1]->h };
+
+	SDL_Rect total = { fontRect[0].x, fontRect[0].y, fontRect[0].w, fontRect[0].h * overItem };
 
 	while (SDL_PollEvent(&eventOver))
 	{
@@ -656,11 +666,14 @@ void GameEngine::setGameOver()
 
 			for (int i = 0; i < overItem; i++)
 			{
-				if (x >= fontRect[i].x and x <= fontRect[i].x + fontRect[i].w and y >= fontRect[i].y and y <= fontRect[i].y + fontRect[i].h)
+				if (MouseInRect(fontRect[i]))
 				{
-					textOver[i] = new Text(text[i], fontRect[i].x, fontRect[i].y, true, renderer, 0);
-					textOver[i]->RenderFont();
-					SDL_RenderPresent(renderer);
+					a = i;
+					b = 1 - i;
+				}
+				if (!MouseInRect(total))
+				{
+					a = 1; b = 1;
 				}
 			}
 		}
@@ -675,10 +688,11 @@ void GameEngine::setGameOver()
 			{
 				isRunning = true;
 				isOver = false;
+
+				resetPoint();
+
 				P1score = new Text("0", 190, 30, true, renderer, 1);
 				AIscore = new Text("0", 595, 30, true, renderer, 1);
-				aiscore = 0;
-				p1score = 0;
 			}
 
 			if (x >= fontRect[1].x and x <= fontRect[1].x + fontRect[1].w and y >= fontRect[1].y and y <= fontRect[1].y + fontRect[1].h)

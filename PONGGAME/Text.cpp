@@ -28,8 +28,11 @@ Text::Text(const char* text, int x, int y, bool isRefreshText, SDL_Renderer* ren
 	}
 }
 
+Text::~Text() {};
 
 void Text::RenderFont()
 {
 	SDL_RenderCopy(GameEngine::renderer, fontTexture, NULL, &textRectScore);
 }
+
+
