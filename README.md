@@ -5,7 +5,7 @@ Game sử dụng SDL2
   PongGame là một tựa game bóng bàn dễ chơi, đơn giản, cuốn hút. Vì vậy, từ ý tưởng của tựa game này, em đã lựa chọn sản phẩm game đầu tay của mình với tính năng tương tự nhưng trận đấu sẽ diễn ra trên một sân bóng đá.
   
 ## CÁCH CHƠI
-1. Dùng chuột để điều khiển thanh màu xanh.
+1. Dùng chuột để điều khiển thanh màu đỏ.
 2. Cố gắng ghi 5 điểm trước đối phương.
 3. Bấm phím SPACE để có thể dừng trò chơi.
 
