@@ -207,10 +207,6 @@ void GameEngine::AddToPlayerScore() { // Scoring System: Player's Score
 	p1score++;
 	if (p1score > 5) p1score = 5; 
 	s1 = to_string(p1score);
-
-	//delete P1score;
-	//P1score = nullptr;
-
 	P1score = new Text(s1.c_str(), 190, 30, true, renderer, 1);
 }
 
@@ -218,10 +214,6 @@ void GameEngine::AddToAIScore() { // Scoring System: AI's Score
 	aiscore++;
 	if (aiscore > 5) aiscore = 5; 
 	s2 = to_string(aiscore);
-
-	//delete AIscore;
-	//AIscore = nullptr;
-
 	AIscore = new Text(s2.c_str(), 595, 30, true, renderer, 1);
 }
 
@@ -280,7 +272,7 @@ void GameEngine::Render() {
 	paddleAI->Render(renderer); // paddleAI Sprite
 	ball->Render(renderer); // ball Sprite
 
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Visual Improvements: center divider
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // center divider
 	SDL_RenderFillRect(renderer, &divider);
 
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // player's goal area
@@ -291,7 +283,7 @@ void GameEngine::Render() {
 	AIscore->RenderFont(); // render ai's score 
 	P1score->RenderFont(); // render player's score 
 
-	SDL_RenderPresent(renderer); // must call this to render all of the above
+	SDL_RenderPresent(renderer); 
 }
 
 void GameEngine::Input() {
@@ -322,7 +314,7 @@ void GameEngine::Quit() {
 	Mix_FreeMusic(music);
 	Mix_Quit();
 	TTF_Quit();
-	SDL_Quit(); // shutdown SDL, any clearing of properties should be placed here - ADD
+	SDL_Quit(); 
 }
 
 void GameEngine::Update() {
@@ -337,8 +329,6 @@ void GameEngine::Update() {
 	
 	CheckBallPaddleCollision(); // Continually check if ball and player paddle or the ball and AI paddle collide
 
-	//BallInPaddleHumanGoalArea(); // Add score for AI if ball collides with paddleHuman's goal area behind paddleHuman
-	//BallInPaddleAIGoalArea(); // Add score for Player if ball collides with paddleAI's goal area behind paddleAI
 
 	keepScore(); // Game end condition
 
@@ -396,7 +386,7 @@ void GameEngine::Effect()
 	Mix_PlayChannel(-1, effect, 0);
 }
 
-//ADD 
+
 bool MouseInRect(SDL_Rect& a) {
 	int x, y;
 	SDL_GetMouseState(&x, &y);
@@ -406,7 +396,7 @@ bool MouseInRect(SDL_Rect& a) {
 
 void GameEngine::setMenu()
 {
-	static int a = 1, b = 1; //ADD
+	static int a = 1, b = 1; 
 
 	SDL_Surface* menuSurface = IMG_Load("Assets/Sprites/menu.png");
 
@@ -421,8 +411,8 @@ void GameEngine::setMenu()
 	const int menuItem = 2;
 	Text* textMenu[menuItem];
 
-	textMenu[0] = new Text("START", 350, 355, true, renderer, a); //ADD
-	textMenu[1] = new Text("EXIT", 350, 400, true, renderer, b); //ADD
+	textMenu[0] = new Text("START", 350, 355, true, renderer, a); 
+	textMenu[1] = new Text("EXIT", 350, 400, true, renderer, b); 
 
 	textMenu[0]->RenderFont();
 	textMenu[1]->RenderFont();
@@ -450,7 +440,7 @@ void GameEngine::setMenu()
 
 	fontRect[1] = { 350, 400, surface[1]->w, surface[1]->h };
 
-	SDL_Rect total = { fontRect[0].x, fontRect[0].y, fontRect[0].w, fontRect[0].h * menuItem }; //ADD
+	SDL_Rect total = { fontRect[0].x, fontRect[0].y, fontRect[0].w, fontRect[0].h * menuItem }; 
 
 	while (SDL_PollEvent(&eventMenu))
 	{
@@ -468,7 +458,6 @@ void GameEngine::setMenu()
 
 			for (int i = 0; i < menuItem; i++)
 			{
-				//ADD
 				if (MouseInRect(fontRect[i]))
 				{
 					a = i;
