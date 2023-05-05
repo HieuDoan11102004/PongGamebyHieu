@@ -31,8 +31,7 @@ bool GameEngine::InitGameEngine() {
 		return false;
 	}
 
-	if (TTF_Init() < 0) 
-	{
+	if (TTF_Init() < 0) { // check if TTF can be used and if it can't, then show a message
 		cout << "TTF Font engine init failed.\n";
 		return false;
 	}
@@ -191,16 +190,16 @@ void GameEngine::AIServe() {
 
 void GameEngine::AI() { // Improve AI Paddle: making it challenging for player to win
 	if (ball->spriteDestRect.y < WINDOW_HEIGHT / 2 + 2) { // top: aiPaddle moves upward in direction + 2
-		paddleAI->spriteDestRect.y = ball->spriteDestRect.y / 0.9209; // aiPaddle's upward movement is divided/slowed by 0.9209
+		paddleAI->spriteDestRect.y = ball->spriteDestRect.y / 0.9209; // aiPaddle's upward movement is divided/slowed by 0.921, 0.9208 
 	}
 	if (ball->spriteDestRect.y < WINDOW_HEIGHT / 2 + 1) { // middle-top: aiPaddle moves upward in direction + 1
-		paddleAI->spriteDestRect.y = ball->spriteDestRect.y / 0.8580; // aiPaddle's upward movement is divided/slowed by 0.8580
+		paddleAI->spriteDestRect.y = ball->spriteDestRect.y / 0.8580; // aiPaddle's upward movement is divided/slowed by 0.780, 0.8070 
 	}
 	if (ball->spriteDestRect.y >= WINDOW_HEIGHT / 2 - 1) { // middle-bottom: aiPaddle moves downward in direction - 1
-		paddleAI->spriteDestRect.y = ball->spriteDestRect.y * 0.8105; // aiPaddle's downward movement is multiplied/slowed by 0.8105
+		paddleAI->spriteDestRect.y = ball->spriteDestRect.y * 0.8105; // aiPaddle's downward movement is multiplied/slowed by 0.660, 0.66729 
 	}
 	if (ball->spriteDestRect.y >= WINDOW_HEIGHT / 2 - 2) { // bottom: aiPaddle moves downward in direction - 2
-		paddleAI->spriteDestRect.y = ball->spriteDestRect.y * 0.7610; // aiPaddle's downward movement is multiplied/slowed by 0.7610
+		paddleAI->spriteDestRect.y = ball->spriteDestRect.y * 0.7610; // aiPaddle's downward movement is multiplied/slowed by 0.660, 0.8208
 	}
 }
 
@@ -208,6 +207,10 @@ void GameEngine::AddToPlayerScore() { // Scoring System: Player's Score
 	p1score++;
 	if (p1score > 5) p1score = 5; 
 	s1 = to_string(p1score);
+
+	//delete P1score;
+	//P1score = nullptr;
+
 	P1score = new Text(s1.c_str(), 190, 30, true, renderer, 1);
 }
 
@@ -215,6 +218,10 @@ void GameEngine::AddToAIScore() { // Scoring System: AI's Score
 	aiscore++;
 	if (aiscore > 5) aiscore = 5; 
 	s2 = to_string(aiscore);
+
+	//delete AIscore;
+	//AIscore = nullptr;
+
 	AIscore = new Text(s2.c_str(), 595, 30, true, renderer, 1);
 }
 
@@ -315,7 +322,7 @@ void GameEngine::Quit() {
 	Mix_FreeMusic(music);
 	Mix_Quit();
 	TTF_Quit();
-	SDL_Quit(); // shutdown SDL
+	SDL_Quit(); // shutdown SDL, any clearing of properties should be placed here - ADD
 }
 
 void GameEngine::Update() {
@@ -390,8 +397,7 @@ void GameEngine::Effect()
 }
 
 //ADD 
-bool MouseInRect(SDL_Rect& a)  //check mouse state
-{
+bool MouseInRect(SDL_Rect& a) {
 	int x, y;
 	SDL_GetMouseState(&x, &y);
 	if ((x >= a.x and x <= a.x + a.w) and (y >= a.y and y <= a.y + a.h)) return true;
@@ -400,9 +406,9 @@ bool MouseInRect(SDL_Rect& a)  //check mouse state
 
 void GameEngine::setMenu()
 {
-	static int a = 1, b = 1; 
+	static int a = 1, b = 1; //ADD
 
-	SDL_Surface* menuSurface = IMG_Load("Assets/Sprites/menu.png"); 
+	SDL_Surface* menuSurface = IMG_Load("Assets/Sprites/menu.png");
 
 	menuTexture = SDL_CreateTextureFromSurface(renderer, menuSurface);
 
@@ -410,13 +416,13 @@ void GameEngine::setMenu()
 
 	SDL_RenderClear(renderer);
 
-	SDL_RenderCopy(renderer, menuTexture, NULL, NULL); //create menu
+	SDL_RenderCopy(renderer, menuTexture, NULL, NULL);
 
 	const int menuItem = 2;
 	Text* textMenu[menuItem];
 
-	textMenu[0] = new Text("START", 350, 355, true, renderer, a); //create "START" button
-	textMenu[1] = new Text("EXIT", 350, 400, true, renderer, b); //create "EXIT" button
+	textMenu[0] = new Text("START", 350, 355, true, renderer, a); //ADD
+	textMenu[1] = new Text("EXIT", 350, 400, true, renderer, b); //ADD
 
 	textMenu[0]->RenderFont();
 	textMenu[1]->RenderFont();
@@ -444,7 +450,7 @@ void GameEngine::setMenu()
 
 	fontRect[1] = { 350, 400, surface[1]->w, surface[1]->h };
 
-	SDL_Rect total = { fontRect[0].x, fontRect[0].y, fontRect[0].w, fontRect[0].h * menuItem }; 
+	SDL_Rect total = { fontRect[0].x, fontRect[0].y, fontRect[0].w, fontRect[0].h * menuItem }; //ADD
 
 	while (SDL_PollEvent(&eventMenu))
 	{
@@ -463,7 +469,7 @@ void GameEngine::setMenu()
 			for (int i = 0; i < menuItem; i++)
 			{
 				//ADD
-				if (MouseInRect(fontRect[i])) //texts turn red
+				if (MouseInRect(fontRect[i]))
 				{
 					a = i;
 					b = 1 - i;
@@ -492,6 +498,8 @@ void GameEngine::setMenu()
 			}
 		}
 	}
+	SDL_DestroyTexture(menuTexture);
+	for (auto i : textMenu) i->clear();
 }
 
 void GameEngine::pauseGame()
@@ -589,6 +597,8 @@ void GameEngine::pauseGame()
 			}
 		}
 	}
+	SDL_DestroyTexture(pauseTexture);
+	for (auto i : textPause) i->clear();
 }
 
 void GameEngine::setGameOver()
@@ -696,4 +706,7 @@ void GameEngine::setGameOver()
 			}
 		}
 	}
+
+	SDL_DestroyTexture(gameOverTexture);
+	for (auto i : textOver) i->clear();
 }
