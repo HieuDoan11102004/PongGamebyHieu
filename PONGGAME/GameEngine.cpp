@@ -74,8 +74,8 @@ void GameEngine::ResetBallPositionX() { // If ball goes out on sides, left and r
 	if (ball->spriteDestRect.x < 0 || ball->spriteDestRect.x > WINDOW_WIDTH) {
 		ball->spriteDestRect.x = WINDOW_WIDTH / 2;
 		ball->spriteDestRect.y = WINDOW_HEIGHT / 2;
-		speed_x = (rand() % 2 + 1) * direction[rand() % 2] * 2.0; // produces random numbers -1, -2, 1 and 2
-		speed_y = (rand() % 2 + 1) * direction[rand() % 2] * 2.0;
+		speed_x = 2 * direction[rand() % 2] * 2.0; 
+		speed_y = 2 * direction[rand() % 2] * 2.0;
 	}
 }
 
@@ -91,7 +91,7 @@ void GameEngine::ResetPaddleAIBallNotAIArea() { // Reset paddleAI and stop it wh
 
 void GameEngine::BallInAIArea() { // If ball is on the right side of the divider, paddleAI moves with improved AI
 	if (InAIArea(ball->spriteDestRect, divider)) {
-		AI(); // Improve AI Paddle: making it challenging for player to win
+		AI(); // Improve AI Paddle: making it easier for player to win
 	}
 }
 
@@ -177,29 +177,29 @@ bool GameEngine::InAIArea(SDL_Rect BALL, SDL_Rect AIAREA) {
 void GameEngine::PlayerServe() {
 	ball->spriteDestRect.x = WINDOW_WIDTH / 2;
 	ball->spriteDestRect.y = WINDOW_HEIGHT / 2;
-	speed_x = (rand() % 2 + 1) * direction[rand() % 1] * 2.0; // serve to playerPaddle
-	speed_y = (rand() % 2 + 1) * direction[rand() % 2] * 2.0; // produces random numbers -1, -2, 1 and 2
+	speed_x = 2 * direction[rand() % 1] * 2.0; // serve to playerPaddle
+	speed_y = 2 * direction[rand() % 2] * 2.0; 
 }
 
 void GameEngine::AIServe() {
 	ball->spriteDestRect.x = WINDOW_WIDTH / 2;
 	ball->spriteDestRect.y = WINDOW_HEIGHT / 2;
-	speed_x = (rand() % 2 + 1) * (1) * 2.0; // serve to aiPaddle
-	speed_y = (rand() % 2 + 1) * direction[rand() % 2] * 2.0; // produces random numbers -1, -2, 1 and 2
+	speed_x = 2 * (1) * 2.0; // serve to aiPaddle
+	speed_y = 2 * direction[rand() % 2] * 2.0; 
 }
 
-void GameEngine::AI() { // Improve AI Paddle: making it challenging for player to win
-	if (ball->spriteDestRect.y < WINDOW_HEIGHT / 2 + 2) { // top: aiPaddle moves upward in direction + 2
-		paddleAI->spriteDestRect.y = ball->spriteDestRect.y / 0.9209; // aiPaddle's upward movement is divided/slowed by 0.921, 0.9208 
+void GameEngine::AI() { // Improve AI Paddle: making it easier for player to win
+	if (ball->spriteDestRect.y < WINDOW_HEIGHT / 2 + 2) { 
+		paddleAI->spriteDestRect.y = ball->spriteDestRect.y / 0.9209;  
 	}
-	if (ball->spriteDestRect.y < WINDOW_HEIGHT / 2 + 1) { // middle-top: aiPaddle moves upward in direction + 1
-		paddleAI->spriteDestRect.y = ball->spriteDestRect.y / 0.8580; // aiPaddle's upward movement is divided/slowed by 0.780, 0.8070 
+	if (ball->spriteDestRect.y < WINDOW_HEIGHT / 2 + 1) { 
+		paddleAI->spriteDestRect.y = ball->spriteDestRect.y / 0.8580; 
 	}
-	if (ball->spriteDestRect.y >= WINDOW_HEIGHT / 2 - 1) { // middle-bottom: aiPaddle moves downward in direction - 1
-		paddleAI->spriteDestRect.y = ball->spriteDestRect.y * 0.8105; // aiPaddle's downward movement is multiplied/slowed by 0.660, 0.66729 
+	if (ball->spriteDestRect.y >= WINDOW_HEIGHT / 2 - 1) { 
+		paddleAI->spriteDestRect.y = ball->spriteDestRect.y * 0.8105; 
 	}
-	if (ball->spriteDestRect.y >= WINDOW_HEIGHT / 2 - 2) { // bottom: aiPaddle moves downward in direction - 2
-		paddleAI->spriteDestRect.y = ball->spriteDestRect.y * 0.7610; // aiPaddle's downward movement is multiplied/slowed by 0.660, 0.8208
+	if (ball->spriteDestRect.y >= WINDOW_HEIGHT / 2 - 2) { 
+		paddleAI->spriteDestRect.y = ball->spriteDestRect.y * 0.7610; 
 	}
 }
 
@@ -234,8 +234,8 @@ void GameEngine::endGame() { // Game-End Condition
 
 
 void GameEngine::InitGameWorld() {
-	speed_x = -3.5; // speed variables
-	speed_y = -3.5;
+	speed_x = -4.0; // speed variables
+	speed_y = -4.0;
 	int destW = 800; // Sprites:
 	int destH = 600;
 	int destW2 = 128;
@@ -272,7 +272,7 @@ void GameEngine::Render() {
 	paddleAI->Render(renderer); // paddleAI Sprite
 	ball->Render(renderer); // ball Sprite
 
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // center divider
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Visual Improvements: center divider
 	SDL_RenderFillRect(renderer, &divider);
 
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // player's goal area
@@ -283,7 +283,7 @@ void GameEngine::Render() {
 	AIscore->RenderFont(); // render ai's score 
 	P1score->RenderFont(); // render player's score 
 
-	SDL_RenderPresent(renderer); 
+	SDL_RenderPresent(renderer); // must call this to render all of the above
 }
 
 void GameEngine::Input() {
@@ -314,7 +314,7 @@ void GameEngine::Quit() {
 	Mix_FreeMusic(music);
 	Mix_Quit();
 	TTF_Quit();
-	SDL_Quit(); 
+	SDL_Quit(); // shutdown SDL, any clearing of properties should be placed here - ADD
 }
 
 void GameEngine::Update() {
@@ -323,12 +323,12 @@ void GameEngine::Update() {
 
 	BallInPaddleHumanGoalArea(); // Add score for AI if ball collides with paddleHuman's goal area behind paddleHuman
 	BallInPaddleAIGoalArea(); // Add score for Player if ball collides with paddleAI's goal area behind paddleAI
-	
 	PaddleAIMove(); // Move paddleAI with the ball (in the y-direction)
+	ResetPaddleAIBallNotAIArea(); // Reset paddleAI and stop it when ball is away from right side of divider
+	//PaddleAIMove(); // Move paddleAI with the ball (in the y-direction)
 	BallInAIArea(); // If ball is on the right side of the divider, paddleAI moves with improved AI
 	
 	CheckBallPaddleCollision(); // Continually check if ball and player paddle or the ball and AI paddle collide
-
 
 	keepScore(); // Game end condition
 
@@ -385,7 +385,6 @@ void GameEngine::Effect()
 	effect = Mix_LoadWAV("medium.wav");
 	Mix_PlayChannel(-1, effect, 0);
 }
-
 
 bool MouseInRect(SDL_Rect& a) {
 	int x, y;
